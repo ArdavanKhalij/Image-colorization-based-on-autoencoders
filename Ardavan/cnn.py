@@ -1,3 +1,5 @@
+############################################################################################
+# Libraries
 import kornia as kornia
 import numpy as np
 import torch
@@ -24,20 +26,21 @@ from torchvision import datasets, transforms
 import os, shutil, time
 from torch.utils.data import DataLoader
 
+############################################################################################
 # Device Configuration
-
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
 train_path = 'C:/Users/xhuli/OneDrive/Desktop/Education/VUB/3rd Semester/Deep Learning/Project/images/'
-
 train_transform = transforms.Compose([
     transforms.Resize((256, 256)),  # can experiment
     transforms.ToTensor()  # divide the pixel by 255
 ])
+
+############################################################################################
 # Loading the data
 train_dataset = torchvision.datasets.ImageFolder(root=train_path, transform=train_transform)
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=70, shuffle=True)
 
+############################################################################################
 # Convert RDG to LAB space
 # assign the L channel to the x vector
 x = []
