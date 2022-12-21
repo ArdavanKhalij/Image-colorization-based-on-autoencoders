@@ -36,7 +36,7 @@ def set_device():
 def train_nn(model, train_loader, test_loader, criterion, optimizer, n_epochs):
 
 
-def evaluate_model_on_test_set(model, test_loader):
+
 
 
 
