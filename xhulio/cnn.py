@@ -46,68 +46,50 @@ train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=72, shuffle
 x = []  # array of tensors of  L
 y = []  # array of tensors of A and B
 for idx, (data, target) in enumerate(train_loader):
-        for i in data:
-            lab = kornia.color.rgb_to_lab(i/255)
-            x.append(lab[0])
-            y.append(lab[1:3])
-            break
+    for i in data:
+        lab = kornia.color.rgb_to_lab(i / 255)
+        x.append(lab[0])
+        y.append(lab[1:3])
+
+newInput = []
+for i in x:
+    newX = i
+    newX = newX[None, :]
+    newInput.append(newX)
+
+# print("X shape=  ", newInput[0].shape)
 
 
 
+# Creating the model
+class CNN(nn.Module):
+    def __init__(self):
+        super(CNN, self).__init__()
+        self.layer = torch.nn.UpsamplingNearest2d(size=None, scale_factor=2)
 
-# class CNN(nn.Module):
-#     def __init__(self, in_channels=1):
-#         super(CNN, self).__init__()
-#         self.conv1 = nn.Conv2d(in_channels=1, out_channels=8, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    def forward(self, x):
+        x = self.layer(x)
+        return x
+
+
+# Initialize the network
+model = CNN().to(device)
+print("Model Shape= ", model(newInput[0]).shape)
+print("Y shape=  ", y[0].shape)
+
+# optimizer = torch.optim.SGD(model.parameters(), lr=0.2)
+# loss_func = torch.nn.MSELoss()
 #
-#     def forward(self, x):
-#         x = F.relu(self.conv1(x))
-#         return x
-#
-#
-# num_epochs = 1
-# batch_size = 64
-# learning_rate = 0.001
-#
-# # Initialize the network
-# model = CNN().to(device)
-#
-# # Loss and Optimizer
-# criterion = nn.CrossEntropyLoss()
-# optimizer = optim.Adam(model.parameters(), lr=learning_rate)
-#
-# # Train the Network
-#
-# for epoch in range(num_epochs):
-#     for batch_idx, (data, targets) in enumerate(train_dataset):
-#         data = data.to(device= device)
-#         targets = targets.to(device=device)
+# for epoch in range(5):
+#     for i in range(len(x)):
 #
 #         # forward
-#         scores = model(data)
-#         loss = criterion(scores, targets)
-#
-#         # gradient descent
-#         optimizer.step()
-#
-#
-# def check_accuracy(loader, model):
-#     nr_correct = 0
-#     nr_samples = 0
-#     model.eval()
-#
-#     with torch.no_grad():
-#         for x, y in loader:
-#             x = x.to(device=device)
-#             y = y.to(device=device)
-#
-#             scores = model(x)
-#             _, predictions = scores.max(1)
-#             nr_correct += (predictions == y).sum()
-#             nr_samples += predictions.size(0)
-#
-#         print(f'Got {nr_correct}/{nr_samples} with accuracy {float(nr_correct)/float(nr_samples)*100:.2f}')
-#
-#     model.train()
-#
-# check_accuracy(train_dataset, model)
+#         scores = model(x[i])
+        # loss = loss_func(scores, y[i])
+
+        # # backward
+        # optimizer.zero_grad()
+        # loss.backward()
+        #
+        # # gradient descent step
+        # optimizer.step()
