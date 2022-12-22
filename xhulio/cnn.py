@@ -27,6 +27,23 @@ from torchvision import datasets, transforms
 import os, shutil, time
 from torch.utils.data import DataLoader
 
+
+class AverageMeter(object):
+    '''A handy class from the PyTorch ImageNet tutorial'''
+
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.val, self.avg, self.sum, self.count = 0, 0, 0, 0
+
+    def update(self, val, n=1):
+        self.val = val
+        self.sum += val * n
+        self.count += n
+        self.avg = self.sum / self.count
+
+
 # Device Configuration
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -57,8 +74,8 @@ for i in x:
     newX = newX[None, :]
     newInput.append(newX)
 
-# print("X shape=  ", newInput[0].shape)
 
+# print("X shape=  ", newInput[0].shape)
 
 
 # Creating the model
@@ -70,7 +87,7 @@ class CNN(nn.Module):
     def forward(self, x):
         x = self.layer(x)
         y = self.layer(x)
-        return torch.cat((x,y), 0)
+        return torch.cat((x, y), 0)
 
 
 # Initialize the network
@@ -80,13 +97,14 @@ model = CNN().to(device)
 
 optimizer = torch.optim.SGD(model.parameters(), lr=0.2)
 loss_func = torch.nn.MSELoss()
+losses = AverageMeter()
 
 for epoch in range(5):
     for i in range(len(newInput)):
-
         # forward
         scores = model(newInput[i])
         loss = loss_func(scores, y[i])
+        losses.update(loss.item(), newInput[i].size(0))
 
         # backward
         optimizer.zero_grad()
@@ -94,3 +112,8 @@ for epoch in range(5):
 
         # gradient descent step
         optimizer.step()
+
+        if i % 25 == 0:
+            print('Epoch: [{0}][{1}/{2}]\t'
+                  'Loss {loss.val:.4f} ({loss.avg:.4f})\t'.format(
+                epoch, i, len(train_loader), loss=losses))
