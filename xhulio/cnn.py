@@ -1,7 +1,10 @@
 import kornia as kornia
 import numpy as np
 import torch
+from skimage import color
+import torchvision.transforms as T
 import torchvision.datasets
+from skimage.io import imshow
 from torchvision import datasets, transforms
 import torchvision.models as models
 import torch.nn as nn
@@ -32,22 +35,25 @@ train_path = 'C:/Users/xhuli/OneDrive/Desktop/Education/VUB/3rd Semester/Deep Le
 
 train_transform = transforms.Compose([
     transforms.Resize((256, 256)),  # can experiment
-    transforms.ToTensor()  # divide the pixel by 255
+    transforms.ToTensor(),  # divide the pixel by 255
 ])
 # Loading the data
 train_dataset = torchvision.datasets.ImageFolder(root=train_path, transform=train_transform)
-train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=70, shuffle=True)
+train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=72, shuffle=True)
 
 # Convert RDG to LAB space
 # assign the L channel to the x vector
-x = []
-y = []
+x = []  # array of tensors of  L
+y = []  # array of tensors of A and B
 for idx, (data, target) in enumerate(train_loader):
-    for i in range(70):
-        lab = kornia.color.rgb_to_lab(data[i])
-        x.append(lab[:, :, 0])
-        y.append(lab[:, :, 1:] / 128)
-    break
+        for i in data:
+            lab = kornia.color.rgb_to_lab(i/255)
+            x.append(lab[0])
+            y.append(lab[1:3])
+            break
+
+
+
 
 # class CNN(nn.Module):
 #     def __init__(self, in_channels=1):
