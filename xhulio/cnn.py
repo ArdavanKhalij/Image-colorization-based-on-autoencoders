@@ -65,31 +65,32 @@ for i in x:
 class CNN(nn.Module):
     def __init__(self):
         super(CNN, self).__init__()
-        self.layer = torch.nn.UpsamplingNearest2d(size=None, scale_factor=2)
+        self.layer = torch.nn.Linear(256, 256)
 
     def forward(self, x):
         x = self.layer(x)
-        return x
+        y = self.layer(x)
+        return torch.cat((x,y), 0)
 
 
 # Initialize the network
 model = CNN().to(device)
-print("Model Shape= ", model(newInput[0]).shape)
-print("Y shape=  ", y[0].shape)
+# print("Model Shape= ", model(newInput[0]).shape)
+# print("Y shape=  ", y[0].shape)
 
-# optimizer = torch.optim.SGD(model.parameters(), lr=0.2)
-# loss_func = torch.nn.MSELoss()
-#
-# for epoch in range(5):
-#     for i in range(len(x)):
-#
-#         # forward
-#         scores = model(x[i])
-        # loss = loss_func(scores, y[i])
+optimizer = torch.optim.SGD(model.parameters(), lr=0.2)
+loss_func = torch.nn.MSELoss()
 
-        # # backward
-        # optimizer.zero_grad()
-        # loss.backward()
-        #
-        # # gradient descent step
-        # optimizer.step()
+for epoch in range(5):
+    for i in range(len(newInput)):
+
+        # forward
+        scores = model(newInput[i])
+        loss = loss_func(scores, y[i])
+
+        # backward
+        optimizer.zero_grad()
+        loss.backward()
+
+        # gradient descent step
+        optimizer.step()
