@@ -1,6 +1,8 @@
 import kornia as kornia
 import numpy as np
+import plotly.express as px
 import torch
+from kornia.color import lab_to_rgb
 from skimage import color
 import torchvision.transforms as T
 import torchvision.datasets
@@ -99,13 +101,16 @@ optimizer = torch.optim.SGD(model.parameters(), lr=0.2)
 loss_func = torch.nn.MSELoss()
 losses = AverageMeter()
 
+predictions = []
+
 for epoch in range(5):
+    tempPred = []
     for i in range(len(newInput)):
         # forward
         scores = model(newInput[i])
+        tempPred.append(scores)
         loss = loss_func(scores, y[i])
         losses.update(loss.item(), newInput[i].size(0))
-
         # backward
         optimizer.zero_grad()
         loss.backward()
@@ -117,3 +122,13 @@ for epoch in range(5):
             print('Epoch: [{0}][{1}/{2}]\t'
                   'Loss {loss.val:.4f} ({loss.avg:.4f})\t'.format(
                 epoch, i, len(train_loader), loss=losses))
+
+    predictions.append(tempPred)
+
+
+# showing the prediction of picture 71
+firstAB = predictions[4][71]
+output = lab_to_rgb(torch.cat((newInput[71], firstAB), 0))
+transform = T.ToPILImage()
+img = transform(output)
+img.show()
