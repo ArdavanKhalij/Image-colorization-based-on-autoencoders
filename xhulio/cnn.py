@@ -56,6 +56,8 @@ train_transform = transforms.Compose([
     transforms.Resize((256, 256)),  # can experiment
     transforms.ToTensor(),  # divide the pixel by 255
 ])
+
+# TODO: Split the dataset
 # Loading the data
 train_dataset = torchvision.datasets.ImageFolder(root=train_path, transform=train_transform)
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=72, shuffle=True)
@@ -80,6 +82,7 @@ for i in x:
 # print("X shape=  ", newInput[0].shape)
 
 
+# TODO: Put a better model, use resnet18
 # Creating the model
 class CNN(nn.Module):
     def __init__(self):
@@ -103,7 +106,7 @@ losses = AverageMeter()
 
 predictions = []
 
-for epoch in range(5):
+for epoch in range(1):
     tempPred = []
     for i in range(len(newInput)):
         # forward
@@ -126,9 +129,10 @@ for epoch in range(5):
     predictions.append(tempPred)
 
 
+#  TODO: *************************** check this ***************************
 # showing the prediction of picture 71
-firstAB = predictions[4][71]
-output = lab_to_rgb(torch.cat((newInput[71], firstAB), 0))
+firstAB = predictions[0][71]
+output = lab_to_rgb(torch.cat((newInput[71], y[71]), 0))
 transform = T.ToPILImage()
 img = transform(output)
 img.show()
