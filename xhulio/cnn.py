@@ -153,7 +153,7 @@ for i in range(len(x)): # putting the batch size
     y[i] = y[i].unsqueeze(0)
 
 
-# print(x[0].shape, " ", y[0].shape)
+# print(torch.squeeze(x[71], 0).shape, " ", y[0].shape)
 
 
 # TODO: Put a better model, use resnet18
@@ -205,7 +205,7 @@ losses = AverageMeter()
 
 predictions = []
 
-for epoch in range(5):
+for epoch in range(1):
     tempPred = []
     for i in range(len(x)):
         # forward
@@ -229,9 +229,10 @@ for epoch in range(5):
 
 #  TODO: *************************** check this ***************************
 # showing the prediction of picture 71
-y1 = y[71][0:1]
-y2 = y[71][1:2]
-output = lab_to_rgb(torch.squeeze(x[71]) * size, torch.squeeze(predictions[4][71][0:1]) * size, torch.squeeze(predictions[4][71][1:2]) * size)
+yy = torch.squeeze(predictions[0][71])
+y1 = yy[0:1]
+y2 = yy[1:2]
+output = lab_to_rgb(torch.squeeze(x[71], 0) * size, y1 * size, y2 * size)
 transform = T.ToPILImage()
 img = transform(torch.squeeze(output))
 img.show()
