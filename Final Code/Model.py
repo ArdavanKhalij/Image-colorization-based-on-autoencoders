@@ -1,14 +1,15 @@
 ###########################################################################
 # Data of the problem
-size = 256
-batchSize = 100
-train_path = "images/train/"
-epoch_num = 300
+size = 128
+batchSize = 345
+train_path = "images2/train/"
+epoch_num = 20
 ###########################################################################
 
 
 ###########################################################################
 # Libraries
+print("=> Load Libraries")
 import kornia as kornia
 import numpy as np
 import plotly.express as px
@@ -136,6 +137,7 @@ def save_checkpoint(state, filename="my_checkpoint.pth.tar"):
 
 ###########################################################################
 # Device
+print("=> Add device")
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 ###########################################################################
 
@@ -151,6 +153,7 @@ train_transform = transforms.Compose([
 
 ###########################################################################
 # Load train data
+print("=> Load data")
 train_dataset = torchvision.datasets.ImageFolder(root=train_path, transform=train_transform)
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batchSize, shuffle=True)
 ###########################################################################
@@ -158,6 +161,7 @@ train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batchSize, 
 
 ###########################################################################
 # Model
+print("=> Load model")
 class CNN(nn.Module):
     def __init__(self):
         super(CNN, self).__init__()
@@ -172,6 +176,10 @@ class CNN(nn.Module):
             nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
             nn.Conv2d(128, 256, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(256, 512, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(512, 256, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
             nn.Conv2d(256, 128, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
@@ -195,18 +203,22 @@ class CNN(nn.Module):
 ###########################################################################
 # Optimizer and loss function
 model = CNN().to(device)
+print("=> Load optimizer")
 optimizer = torch.optim.SGD(model.parameters(), lr=0.2)
+print("=> Load loss_func")
 loss_func = torch.nn.MSELoss()
 ###########################################################################
 
 
 ###########################################################################
+# Train
 losses = []
 predictions = []
 tempPred2 = []
 batch_acc_list = []
 LAB = []
 LABForAllEpochs = []
+print("=> Start training")
 for epoch in range(epoch_num):
     tempPred = []
     LAB1 = []
@@ -232,8 +244,8 @@ for epoch in range(epoch_num):
             loss.backward()
             # gradient descent step
             optimizer.step()
-            if Counter%20 == 0:
-                print(f'Epoch: {epoch} \t data in batch {Counter2}: {Counter}\t  loss: {loss.item()}')
+            # if Counter%10 == 0:
+            print(f'Epoch: {epoch} \t data in batch {Counter2}: {Counter}\t  loss: {loss.item()}')
         LAB.append(LAB1)
         LAB1 = []
         tempPred2.append(tempPred)
