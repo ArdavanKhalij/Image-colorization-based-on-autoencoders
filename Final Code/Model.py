@@ -1,9 +1,10 @@
 ###########################################################################
 # Data of the problem
-size = 128
+size = 32
 batchSize = 345
 train_path = "images2/train/"
 epoch_num = 20
+Load_Model = True
 ###########################################################################
 
 
@@ -136,6 +137,15 @@ def save_checkpoint(state, filename="my_checkpoint.pth.tar"):
 
 
 ###########################################################################
+# Loading model
+def load_model(checkpoint):
+    print("=> Loading checkpoint")
+    model.load_state_dict(checkpoint['state_dict'])
+    optimizer.load_state_dict(checkpoint['optimizer'])
+###########################################################################
+
+
+###########################################################################
 # Device
 print("=> Add device")
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -161,7 +171,6 @@ train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batchSize, 
 
 ###########################################################################
 # Model
-print("=> Load model")
 class CNN(nn.Module):
     def __init__(self):
         super(CNN, self).__init__()
@@ -218,6 +227,8 @@ tempPred2 = []
 batch_acc_list = []
 LAB = []
 LABForAllEpochs = []
+if Load_Model:
+    load_model(torch.load("my_checkpoint.pth.tar"))
 print("=> Start training")
 for epoch in range(epoch_num):
     tempPred = []
@@ -258,7 +269,6 @@ for epoch in range(epoch_num):
     tempPred2 = []
     LABForAllEpochs.append(LAB)
     LAB = []
-    if epoch == (epoch_num-1):
-        checkpoint = {'state_dict': model.state_dict(), 'optimizer': optimizer.state_dict()}
-        save_checkpoint(checkpoint)
+    checkpoint = {'state_dict': model.state_dict(), 'optimizer': optimizer.state_dict()}
+    save_checkpoint(checkpoint)
 ###########################################################################
