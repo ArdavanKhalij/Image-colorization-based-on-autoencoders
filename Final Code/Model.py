@@ -272,3 +272,10 @@ for epoch in range(epoch_num):
     checkpoint = {'state_dict': model.state_dict(), 'optimizer': optimizer.state_dict()}
     save_checkpoint(checkpoint)
 ###########################################################################
+
+
+###########################################################################
+# plot the losses
+plt.plot(batch_acc_list)
+plt.show()
+###########################################################################
