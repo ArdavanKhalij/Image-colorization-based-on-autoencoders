@@ -7,4 +7,10 @@ After you download the data you should make 2 folders, train, and test. You shou
 
 ### Step 2: Training the models
 There are trained models saved in the submited project but you can also train them yourself. The models desigend in a way that you can also continue to learn the existing checkpoints even more.
+
 For train the 3 layer model you should run 3layer_model.py, for 5 layer you should run 5layer_model.py, for 7 layer you should run 7layer_model.py, for 13 layer you should run 13layer_model.py, and for resnet model you should run resnet_model.py.
+
+### Step 3: Testing the results and see the results
+We prepared a number of jupyter notebooks so you can run them with the correct path of the data and see the results and accuracy of the models.
+
+For run and test the 3 layer model you should run 3layer_model.py, for 5 layer you should run 5layer_model.py, for 7 layer you should run 7layer_model.py, for 13 layer you should run 13layer_model.py, and for resnet model you should run resnet_model.py.
