@@ -1,9 +1,14 @@
 # Image-colorization-supervised-and-selfsupervised-ML
 
+## Group members:
+1. Ardavan Khalij
+2. Xhulio Isufi
+3. Mahsa Alirezaee
+
 ### Step 1: Download data
 Our data is from Kaggle, and you can find them at this link: https://www.kaggle.com/datasets/theblackmamba31/landscape-image-colorization
 
-After downloading the data, you should make two folders, train and test. You should put 6900 color photos in the train folder and the rest of the color photos in the test.
+After downloading the data, you should make two folders, train and test. You should put 6900 color photos in the train folder and the rest of the color photos in the test. Please note that the photos should be in a folder called class inside of the train and test but you should'nt put the class in the path in the program.
 
 ### Step 2: Saved train models
 The saved train models for all models are available in the submitted folder.
